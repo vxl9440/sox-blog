@@ -70,7 +70,7 @@ public class AccountController {
     @PostMapping("/signup")
     //insert new account
     public String signUp(String username, String password, Model model){
-         User newUser = new User(username,Hasher.encrypt(password),username,null,"/root/springboot/data/images/default_image");
+         User newUser = new User(username,Hasher.encrypt(password),username,null,Constant.profilePicPath_win);
          int result = userService.insertAccount(newUser);
          if(result == 1){
              model.addAttribute("msg","You have successfully signed up, ");

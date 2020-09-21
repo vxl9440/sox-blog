@@ -4,6 +4,7 @@ import com.sox.pojo.Blog;
 import com.sox.pojo.Type;
 import com.sox.pojo.User;
 import com.sox.service.BlogServiceImpl;
+import com.sox.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +39,7 @@ public class EditorController {
     public String submitBlog(HttpSession session,String title,String introduction,
                              String content,@RequestParam("types[]")int[] types) throws IOException {
         String blogID = UUID.randomUUID().toString();//create a blog id
-        String realPath = "/root/springboot/data/posts/"+blogID+title.hashCode();
+        String realPath = Constant.postPath_win +blogID+title.hashCode();
         File file = new File(realPath);
         if(!file.exists()) file.createNewFile();
 
