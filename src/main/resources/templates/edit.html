@@ -153,7 +153,16 @@
         closeIcon.setAttribute("arial-hidden","true");
         closeIcon.innerHTML = "&times;";
 
-        newCloseIcon.onclick = function (){typeField.removeChild(newNode);} // remove type-item
+        newCloseIcon.onclick = function (){ // remove type-item
+            typeField.removeChild(newNode);
+            for(let i = 0,len = typeList.length;i < len;i++){
+                if(typeList[i] === typeID){
+                    typeList.splice(i,1);
+                    break;
+                }
+            }
+        }
+
         newCloseIcon.appendChild(closeIcon);
         newNode.appendChild(newCloseIcon);
         typeField.appendChild(newNode);
