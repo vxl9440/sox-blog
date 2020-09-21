@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/nav.css}">
+    <title>SOX Blog</title>
+
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        #view,.bi,#info-container>span{
+            vertical-align: middle;
+        }
+
+        #info-container>span{
+            margin-right: 1em;
+        }
+
+        #dropdown-menu{
+            width:3em;
+            max-height:100px;
+            overflow: scroll
+        }
+
+        #pageManager{
+            float: right;
+            position: relative;
+            right: 5px;
+            top: 5px;
+        }
+
+    </style>
+</head>
+<body th:onload="init([[${withType}]])">
+<!--navigation bar begin-->
+<nav th:replace="~{common/commons::navbar-1}"></nav>
+<!--navigation bar end-->
+
+<!--search bar begin-->
+<div class="input-group" id="search-group">
+    <input id="search-input" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2">
+    <div class="input-group-append">
+        <button onclick="searchForBlogs()" class="btn btn-outline-secondary bg-primary text-white" type="button" id="button-search">Search</button>
+    </div>
+</div>
+<!--search bar end-->
+
+<!--content begin-->
+<div class="container-fluid" id="content">
+    <div class="row no-gutters">
+        <div class="col-12 col-sm-12 col-md-2 col-lg-2 order-1 order-sm-1 order-md-1">
+            <div class="btn-group-vertical">
+                <a href="/mySpace/1" type="button" class="btn btn-light">Subscriptions</a>
+                <a href="/mySpace/2" type="button" class="btn btn-light">Followers</a>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-7 col-lg-7 order-3 order-sm-3 order-md-2">
+            <div id="blogs" th:fragment="blogs">
+                <div id="pageManager">
+                    <select onchange="changePage()" id="dropdown-menu">
+                        <option th:selected="${number == currentPage?'true':'false'}" th:each="number:${countList}"
+                                th:text="${number}" th:value="${number}"></option>
+                    </select>
+                </div>
+                <div style="clear: both">
+                    <div th:style="${buList.size() > 0?'display:block':'display:none'}"
+                         th:each="list:${buList}" class="single-blog">
+                        <p><a th:href="@{/blog/readBlog/}+${list.getBlog().getBlogID()}" th:text="${list.getBlog().getTitle()}"></a></p>
+                        <div>
+                            <img th:src="${list.getUser().getProfilePicture()}" height="64" width="64" class="float-left" alt="profile picture">
+                            <span th:text="${list.getBlog().getIntroduction()}"></span>
+                        </div>
+                        <div id="info-container" style="clear: both">
+                              <span th:text="${list.getUser().getName()}"
+                                    style="color: blueviolet;font-weight: bold"></span>
+                            <span th:text="${#dates.format(list.getBlog().getDate(), 'yyyy-MM-dd')}"></span>
+                            <span>
+                                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
+                                    <path fill-rule="evenodd" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                   </svg>
+                                  <span th:text="${list.getBlog().getView()}" id="view"></span>
+                             </span>
+                        </div>
+                    </div>
+                    <div th:style="${buList.size() == 0?'display:block':'display:none'}">
+                        <p style="text-align: center;color: red;padding-top:1em" class="h3">
+                            Not Blog Found
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-3 col-lg-3 order-2 order-sm-2 order-md-3">
+            <div id="right-div">
+                <p style="text-align: center;">
+                    <a th:href="@{/edit}" class="btn btn-primary">Write a blog</a>
+                </p>
+                <div id="category">
+                    <ul>
+                        <li th:each="type:${typeList}" th:text="${type.getTypeName()}"
+                            th:onclick="searchForType([[${type.getTypeID()}]])" class="btn btn-info btn-sm">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--content end-->
+<footer id="footer" style="height: 100px;width:100%;background: #2f2b2b">
+     <p style="color: white;line-height: 100px;text-align: center">Powered by SpringBoot</p>
+</footer>
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
+<script src="/js/character.js"></script>
+
+<!--<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="/js/ballAttach.js"></script>-->
+
+<script type="text/javascript">
+    let withType = false;
+    function init(withType_t){
+        withType = withType_t;
+    }
+
+    function changePage(){
+        let pageNumber = $("#dropdown-menu").val();
+        $('#blogs').load((!withType?"/changePage/":"/changePageWithType/")+pageNumber);
+        $("#dropdown-menu").val(pageNumber);
+    }
+
+    function searchForType(typeID){
+        $('#blogs').load("/searchForType/"+typeID);
+    }
+
+    function searchForBlogs(){
+        let keywords = $("#search-input").val();
+        if(keywords.trim().length !== 0){
+            $('#blogs').load("/searchForBlogs/"+encodeURI(keywords));
+        }
+    }
+</script>
+
+</body>
+</html>

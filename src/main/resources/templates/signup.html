@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap Flat Modal Login Modal Form</title>
+    <link rel="stylesheet" th:href="@{https://fonts.googleapis.com/css?family=Roboto|Varela+Round}">
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/login_modal.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+</head>
+<body>
+<!--navigation bar begin-->
+<nav th:replace="~{common/commons::navbar-2}"></nav>
+
+
+<div class="modal-dialog modal-login">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Sign Up</h4>
+        </div>
+        <div class="modal-body">
+            <form th:action="@{/signup}" method="post" onsubmit="return validateSignUp()">
+                <div class="form-group"> <!--username-->
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" id="username" maxlength="18" class="form-control" name="username"
+                               placeholder="Username" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group"> <!--password-->
+                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                        <input type="password" maxlength="18" class="form-control" name="password"
+                                placeholder="Password" required="required">
+                    </div>
+                </div>
+                <div class="form-group" id="reenter-pwd"><!--reenter password-->
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                        <input type="password" maxlength="18" class="form-control"
+                                placeholder="Confirm Password" required="required">
+                    </div>
+                </div>
+                <p id="tipText" style="display: none;color: red;padding-bottom: 5px"></p>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn">Sign Up</button>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">Already have an user?<a th:href="@{/toLogin}">Login</a></div>
+    </div>
+</div>
+
+
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script>
+    // false for exist, true for no exist
+    let state = false;
+
+    //validate form
+    function validateSignUp(){
+        let tipText = document.getElementById("tipText");
+        tipText.style.display = "inline";
+        let allInput = document.getElementsByClassName("form-control");
+        let user = allInput[0].value; // user
+        let password = allInput[1].value; // password
+        let re_password = allInput[2].value; // confirm password
+
+        if(state === false) return false; // user exists
+
+        //check user, length between 6 and 18
+        if(user.length < 6){
+            tipText.innerText = "Length of username at least 6";
+            return false;
+        }
+
+        //check password, length between 6 and 18
+        if(password.length < 6){
+            tipText.innerText = "Length of password at least 6";
+            return false;
+        }
+
+        if(password === re_password){
+            tipText.style.display = "none";
+            return true;
+        }else{
+            tipText.innerText = "Two passwords don't match";
+            return false;
+        }
+
+    }
+
+    //check username existence
+    function checkExist() {
+         $.post({
+             url:'/exist',
+             data:{"username":$("#username").val()},
+             success:function (data) {
+                  console.log(data);
+                  if(data === 1){
+                      $("#tipText").css("display","none");
+                      state = true;
+                  }else{
+                      $("#tipText").css("display","inline").html("This username already existed");
+                      state = false;
+                  }
+             }
+         })
+    }
+
+    function addRegex(element,regex){
+        element.oninput = function(){
+            element.value= element.value.replace(regex,'');
+        }
+    }
+
+    //add pattern to input tag
+    let elements = document.getElementsByClassName("form-control");
+    addRegex(elements[0],/[^a-z0-9]/g);
+    addRegex(elements[1],/[^a-zA-Z0-9_!@#$%^&*()]/g);
+    addRegex(elements[2],/[^a-zA-Z0-9_!@#$%^&*()]/g);
+
+    //add onblur to username input
+    document.getElementById("username").onblur = checkExist;
+</script>
+
+</body>
+</html>

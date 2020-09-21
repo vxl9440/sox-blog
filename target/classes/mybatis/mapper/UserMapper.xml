@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sox.mapper.UserMapper">
+   <select id="getAccountByUsername" resultType="User">
+       select * from blog.user where username = #{username}
+   </select>
+
+    <insert id="insertAccount">
+        insert into blog.user(username,password,`name`,profilePicture)
+        values(#{username},#{password},#{name},#{profilePicture})
+    </insert>
+
+    <update id="updateAccount" parameterType="User">
+        update blog.user
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+        </set>
+        where username = #{username}
+    </update>
+
+    <update id="updatePassword" parameterType="map">
+        update blog.user set password = #{password}
+        where username = #{username}
+    </update>
+
+    <select id="selectSubByID" resultType="User" parameterType="map">
+        select u.username username,u.name `name`,u.email email,u.profilePicture profilePicture
+        from blog.user u, blog.subscription s
+        where
+        <choose>
+            <when test="subFromID != null">
+                u.username = s.subToID and s.subFromID = #{subFromID}
+            </when>
+            <otherwise>
+                u.username = s.subFromID and s.subToID = #{subToID}
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

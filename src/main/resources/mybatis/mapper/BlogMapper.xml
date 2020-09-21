@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sox.mapper.BlogMapper">
+    <insert id="insertBlog" parameterType="Blog">
+        insert into blog.blog(blogID,authorID,date,content,title,introduction)
+        values(#{blogID},#{authorID},#{date},#{content},#{title},#{introduction})
+    </insert>
+
+    <select id="selectAllBlogsCount" parameterType="map" resultType="int">
+        <choose>
+            <when test="typeID != null">
+                select count(*) from blog.blog_type_assoc bta
+                where bta.typeID = #{typeID}
+            </when>
+            <otherwise>
+                select count(*) from blog.blog b
+            </otherwise>
+        </choose>
+    </select>
+
+    <sql id="search-prefix">
+        select distinct b.blogID blogID,b.authorID authorID,b.date `date`,b.content content,b.introduction introduction,
+                        b.view `view`,b.like `like`,b.title title,u.username username,u.name `name`,
+                        u.email email,u.profilePicture profilePicture
+        from blog.blog b,blog.user u, blog.blog_type_assoc bta
+        where b.authorID = u.username
+    </sql>
+
+    <select id="queryAllBlogs" resultMap="blogUser" resultType="BlogUserAssociation" parameterType="map">
+        <include refid="search-prefix"/>
+        <if test="typeID != null">
+            and b.blogID = bta.blogID and bta.typeID = #{typeID}
+        </if>
+        ORDER BY b.date DESC
+        limit #{start},#{end}
+    </select>
+
+    <select id="selectBlogsByKeyword" resultType="BlogUserAssociation" parameterType="map" resultMap="blogUser">
+        <include refid="search-prefix"/>
+        and
+        <foreach collection="keywords" item="keyword" separator="or" open="(" close=")">
+            b.title like concat("%",#{keyword},"%") or b.introduction like concat("%",#{keyword},"%")
+        </foreach>
+        ORDER BY b.date DESC
+    </select>
+
+    <select id="queryTypesByBlogID" resultType="String">
+        select t.typeName typeName
+        from blog.blog_type_assoc bta,blog.type t
+        where bta.typeID = t.typeID and bta.blogID = #{blogID}
+    </select>
+
+    
+    <resultMap id="blogUser" type="BlogUserAssociation">
+        <association property="blog" javaType="Blog">
+            <result property="blogID" column="blogID"/>
+            <result property="authorID" column="authorID"/>
+            <result property="date" column="date"/>
+            <result property="content" column="content"/>
+            <result property="view" column="view"/>
+            <result property="like" column="likes"/>
+            <result property="title" column="title"/>
+            <result property="introduction" column="introduction"/>
+        </association>
+        <association property="user" javaType="User">
+            <result property="username" column="username"/>
+            <result property="name" column="name"/>
+            <result property="email" column="email"/>
+            <result property="profilePicture" column="profilePicture"/>
+        </association>
+    </resultMap>
+</mapper>

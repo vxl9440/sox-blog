@@ -1,0 +1,39 @@
+.btn-login,.profile-pic{
+    position: absolute;
+    right: 0.5em;
+}
+
+.profile-pic{
+    top: 5px;
+    border-radius: 50px;
+}
+
+
+#search-group{
+    z-index: 99;
+    width: 20em;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+    #search-group{
+        left: 0;
+        top:3px;
+        margin-bottom: 6px;
+        transform: none;
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 98%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+}

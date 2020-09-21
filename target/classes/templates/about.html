@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+    <title>SOX Blog</title>
+
+    <style>
+        body{
+            background: #f3eeee;
+        }
+          #content{
+              background: white;
+              height: 500px;
+              padding: 1em;
+              width: 60%;
+              border-radius: 5px;
+              margin: 4em auto;
+          }
+    </style>
+</head>
+<body>
+
+<!--navigation bar begin-->
+<nav th:replace="~{common/commons::navbar-2}"></nav>
+
+<div id="content">
+    <p>
+        The purpose of blogs
+    </p>
+    <p>
+        Filter information: It is the era of internet information. There was too much, too complicated, and messy information that are overflooding on the internet. It may cause many learners cannot distinguish the important and useful information. Thus, browsing other's blog can help you to improve the gain of efficiency of knowledge.
+    </p>
+    <p>
+        Provide a valuable context for learning: Different to the teaching assistant website that only provides links to some reference materials, while the blog provides more evaluations and broader background information.
+    </p>
+    <p>
+        Improve literacy: During the process of information release, Blogger needs the most appropriate way to filter and explain information to makes his thoughts are acceptable and understood by more peoples.
+    </p>
+    <p>
+        Encourage participants to express their different opinions: The blog is equal, and blogs value the process of participation rather than the result. Regarding the opinions of books, people can express their understanding of these issues through blogs. The blog is equal, and blogs value the process of participation rather than the result. Regarding the opinions of books, people can express their understanding of these issues through blogs. Therefore, Blogs do not require unification of opinions but require specificity and independence of opinions. Also, several different topics can be set during the course setting process, allowing people to freely choose the topics they are interested in
+        Provide an evaluation of information: The knowledge filtered by the blog is valuable, where is the value, whether the reader has supplementary information, and what kind of views the reader has on the information and ideas of the blog can be expressed through evaluation.
+    </p>
+</div>
+
+<!--content end-->
+<footer id="footer" style="height: 100px;width:100%;background: #2f2b2b">
+    <p style="color: white;line-height: 100px;text-align: center">Powered by SpringBoot</p>
+</footer>
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+</body>
+</html>

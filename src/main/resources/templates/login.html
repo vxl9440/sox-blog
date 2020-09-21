@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{https://fonts.googleapis.com/css?family=Roboto|Varela+Round}">
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/login_modal.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+    <title>SOX Blog</title>
+</head>
+<body>
+
+<!--navigation bar begin-->
+<nav th:replace="~{common/commons::navbar-2}"></nav>
+
+
+<div class="modal-dialog modal-login">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Sign In</h4>
+        </div>
+        <div class="modal-body">
+            <form th:action="@{/login}" method="post">
+                <div class="form-group"> <!--username-->
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" name="username" placeholder="Username" required="required"
+                         th:value="${username}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group"> <!--password-->
+                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                        <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn">Sign In</button>
+                </div>
+                <p th:text="${msg}" style="color: red;text-align: center"></p>
+            </form>
+        </div>
+        <div class="modal-footer">Don't have a user? &nbsp;<a th:href="@{/toSignup}">Sign up</a></div>
+    </div>
+</div>
+
+
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script>
+    function addRegex(element,regex){
+        element.oninput = function(){
+            element.value= element.value.replace(regex,'');
+        }
+    }
+
+    elements = document.getElementsByClassName("form-control");
+    addRegex(elements[0],/[^a-z0-9]/g); //user
+    addRegex(elements[1],/[^a-zA-Z0-9_!@#$%^&*()]/g); //password
+</script>
+</body>
+</html>

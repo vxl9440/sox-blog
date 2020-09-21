@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<!--nav with login and profile picture-->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark" th:fragment="navbar-1">
+    <a class="navbar-brand" th:href="@{/toHome}">SOX</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/toHome}">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" th:href="@{/toAbout}">About</a>
+            <a shiro:notAuthenticated="" class="btn btn-success btn-login d-none d-lg-inline" th:href="@{/toLogin}">Login</a>
+            <a shiro:authenticated="" href="/mySpace/0">
+                <img class="profile-pic d-none d-lg-inline" th:src="${session.user.getProfilePicture()}"
+                     style="border-radius: 50px" height="50" width="50" alt="profile picture">
+            </a>
+            <a shiro:notAuthenticated="" class="nav-link d-lg-none d-md-inline" th:href="@{/toLogin}">Login</a>
+            <a shiro:authenticated="" class="nav-link d-lg-none d-md-inline"
+               href="/mySpace/0">Account</a>
+        </div>
+    </div>
+</nav>
+
+
+<!--nav without login and profile picture-->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark" th:fragment="navbar-2">
+    <a class="navbar-brand" th:href="@{/toHome}">SOX</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/toHome}">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#">About</a>
+        </div>
+    </div>
+</nav>
+
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+    <link rel="stylesheet" th:href="@{/css/nav.css}">
+
+    <title>Edit Blog</title>
+
+    <style>
+        #edit{
+            width: 80%;
+            height: 100%;
+        }
+
+        #text-bar,#tool-bar{
+            z-index: 1;
+            border: 1px solid #ccc;
+        }
+
+        #text-bar{
+            height: 400px;
+        }
+
+        button{
+            cursor: pointer;
+        }
+
+        #type-field{
+            border:1px solid brown;
+            border-radius: 5px;
+            height:2.5em;
+        }
+
+        .scrollable-menu {
+            height: auto;
+            max-height: 160px;
+            overflow-x: hidden;
+        }
+
+        #dropdown-menu{
+            background: #0c7cb5;
+            color: #FFFFFF;
+            border-radius: 3px;
+        }
+
+        .type{
+            cursor: pointer;
+        }
+
+        .type:hover{
+            background: #7b8991;
+            color: white;
+        }
+
+        .type-item{
+            background:#0c7cb5;
+            color:white;
+            padding:0 3px;
+            margin-left: 5px;
+            margin-top: 2px;
+            display:inline-block;
+            border-radius:5px;
+            line-height:1.8em
+        }
+
+        .type-item:hover{
+            background: #7b8991;
+        }
+
+    </style>
+</head>
+<body>
+
+<nav th:replace="~{common/commons::navbar-1}"></nav>
+
+<div id="edit" class="ml-auto mr-auto">
+    <div class="form-group" style="margin-top: 1em">
+        <label for="subject"><span style="color: red">*</span>Subject:</label>
+        <input type="email" class="form-control" id="subject">
+    </div>
+    <div class="form-group">
+        <button type="button" id="dropdown-menu" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Select Type <span class="caret"></span></button>
+        <ul class="dropdown-menu scrollable-menu" role="menu">
+            <li th:each="type:${types}" th:text="${type.getTypeName()}" style="display: block"
+                th:onclick="addType([[${type.getTypeName()}]],[[${type.getTypeID()}]])" class="type">
+            </li>
+        </ul>
+    </div>
+
+    <div id="type-field" style="padding: 3px;"></div>
+    <div class="form-group" style="margin-top: 1em">
+        <label for="introduction"><span style="color: red">*</span>Introduction:</label>
+        <textarea rows="3" maxlength="512" onchange="this.value=this.value.substring(0, 512)"
+                  onkeydown="this.value=this.value.substring(0, 512)"
+                  onkeyup="this.value=this.value.substring(0, 512)" class="form-control" id="introduction"></textarea>
+    </div>
+    <div id="tool-bar" style="border: 1px solid #ccc;margin-top: 3em;"></div>
+    <div style="padding: 5px 0; color: #ccc"></div>
+    <div id="text-bar"></div>
+    <div class="form-group" style="margin-top: 1em">
+        <button class="btn btn-primary" onclick="validator()">Submit</button>
+    </div>
+</div>
+
+<!--content end-->
+<footer id="footer" style="height: 100px;width:100%;background: #2f2b2b">
+    <p style="color: white;line-height: 100px;text-align: center">Powered by SpringBoot</p>
+</footer>
+
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+<!-- include editor -->
+<script type="text/javascript" th:src="@{/js/editor/wangEditor.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/editor.js}"></script>
+
+<script type="text/javascript">
+    let typeList = [];
+
+    function addType(typeName,typeID){
+        let typeField = document.getElementById("type-field");
+        //create new node
+        let newNode = document.createElement("span");
+        newNode.innerText = typeName;
+        newNode.setAttribute("class","type-item");
+
+        //check existence
+        let flag = 0;
+        for(let i = 0,len = typeList.length;i < len;i++){
+            if(typeList[i] === typeID){
+                flag = 1;
+                break;
+            }
+        }
+        if(flag) return;
+        typeList.push(typeID);
+
+        console.log(typeList);
+        //create a close icon
+        let newCloseIcon = document.createElement("button");
+        newCloseIcon.setAttribute("type","button");
+        newCloseIcon.setAttribute("class","close");
+        newCloseIcon.setAttribute("arial-label","Close");
+
+        //create span to contain close icon
+        let closeIcon = document.createElement("span");
+        closeIcon.setAttribute("arial-hidden","true");
+        closeIcon.innerHTML = "&times;";
+
+        newCloseIcon.onclick = function (){typeField.removeChild(newNode);} // remove type-item
+        newCloseIcon.appendChild(closeIcon);
+        newNode.appendChild(newCloseIcon);
+        typeField.appendChild(newNode);
+    }
+
+    function validator(){
+        let subject = $("#subject").val().trim();
+        let introduction = $("#introduction").val().trim();
+        let blogContent = editor.txt.html().trim();
+        if(subject.length > 0 && blogContent.length > 0 && introduction.length > 0){
+            sendData();
+        }else{
+            if(subject.length === 0) $("#subject").css("border","1px solid red");
+            if(editor.txt.html().length === 0) $("#text-bar").css("border","1px solid red");
+            if(introduction.length === 0) $("#introduction").css("border","1px solid red");
+        }
+    }
+
+    function sendData(){
+        let allData = {
+            "title":$("#subject").val().trim(),
+            "introduction":$("#introduction").val().trim(),
+            "content":editor.txt.html(),
+            "types":typeList,
+        }
+
+        $.post({
+            url:"/submitBlog",
+            data: allData,
+            contentType:"application/x-www-form-urlencoded",
+            success:function(data){
+                if(data !== "FAIL"){
+                    window.location.href = "/blog/readBlog/"+data;
+                }else{
+                    alert("Something go wrong");
+                }
+            },
+            error:function (status) {
+                alert(status);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+    <title>SOX Blog</title>
+
+    <style>
+        .success-msg{
+            margin-top: 3em;
+            width:100%;
+        }
+
+        .success-msg>p{
+            text-align: center;
+            font-size: 1.5em;
+            font-family: Arial,sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<!--navigation bar begin-->
+<nav th:replace="~{common/commons::navbar-2}"></nav>
+
+<div class="success-msg">
+    <p><span th:text="${msg}"></span>
+        <a th:style="${show ==true ?'display:inline':'display:none'}" th:href="@{/toLogin}">here</a>
+        <span th:style="${show ==true ?'display:inline':'display:none'}"> to login</span>
+    </p>
+</div>
+
+
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+</body>
+</html>

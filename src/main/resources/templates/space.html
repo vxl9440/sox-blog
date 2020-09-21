@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Personal Space</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+    <link rel="stylesheet" th:href="@{/css/nav.css}">
+
+    <style>
+        body{
+            background: #f3eeee;
+        }
+
+        #profile{
+            width: 80%;
+            margin: 1em auto;
+            box-shadow: 1px 1px #b39d9d;
+            height:600px;
+            background: #FFFFFF;
+            border-radius: 5px;
+            overflow: auto;
+        }
+
+        #profile>div:nth-of-type(1){
+            width: 80%;
+            margin: 3em auto 1em auto;
+        }
+
+        .blog{
+            border-bottom:1px solid #d4c5c5;
+            padding: 1em;
+        }
+
+        .list-item{
+            width: 60%;
+            margin: 0 auto;
+            padding: 0.5em;
+            border-bottom: 1px solid #cfbebe;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+             .list-item{
+                 width: 98%;
+             }
+        }
+    </style>
+</head>
+<body th:onload="init([[${active}]])">
+<!--nav-->
+<nav th:replace="~{common/commons::navbar-2}"></nav>
+
+<div id="profile">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab"
+               href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Profile</a>
+
+            <a class="nav-item nav-link" id="nav-blogs-tab" data-toggle="tab"
+               href="#nav-blogs" role="tab" aria-controls="nav-blogs" aria-selected="false">My Blogs</a>
+
+            <a class="nav-item nav-link" id="nav-follower-tab" data-toggle="tab"
+               href="#nav-follower" role="tab" aria-controls="nav-follower" aria-selected="false">Follower</a>
+
+            <a class="nav-item nav-link" id="nav-subscriber-tab" data-toggle="tab"
+               href="#nav-subscriber" role="tab" aria-controls="nav-subscriber" aria-selected="false">Subscriber</a>
+
+            <a class="nav-item nav-link" id="nav-user-tab" data-toggle="tab"
+               href="#nav-user" role="tab" aria-controls="nav-user" aria-selected="false">Account</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div>
+                <div class="form-group">
+                    <img th:src="${session.user.getProfilePicture()}" style="border-radius: 64px"
+                         height="64" width="64" alt="profile picture">
+                </div>
+                <div>
+                    <span th:text="${session.user.getUsername()}" style="color: blueviolet;font-weight: bold"></span>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input maxlength="20" id="name" type="text" class="form-control"
+                           th:value="${session.user.getName() != null?session.user.getName():''}">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input maxlength="25" id="email" type="email" class="form-control"
+                           th:value="${session.user.getEmail() != null?session.user.getEmail():''}">
+                </div>
+                <div class="form-group">
+                    <p id="msg" style="color: red"></p>
+                </div>
+                <button onclick="save()" class="btn btn-primary" >Save</button>
+            </div>
+        </div><!--end of profile-->
+        <div class="tab-pane fade" id="nav-blogs" role="tabpanel" aria-labelledby="nav-blogs-tab">
+            <div style="border: 1px solid #88828a">
+                <div th:each="bList:${blogList}" class="blog">
+                    <p>
+                        <a th:href="@{/blog/readBlog/}+${bList.getBlogID()}" th:text="${bList.getTitle()}"
+                           class="h3" style="text-decoration: underline"></a>
+                    </p>
+                    <p th:text="${bList.getIntroduction()}"></p>
+                    <p>
+                        <span th:text="${#dates.format(bList.getDate(), 'yyyy-MM-dd')}"></span>
+                        <span>
+                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
+                                <path fill-rule="evenodd" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                             </svg>
+                         <span th:text="${bList.getView()}" id="view"></span>
+                       </span>
+                    </p>
+                </div>
+            </div>
+        </div> <!--end of blogs-->
+        <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-follower-tab">
+             <div id="followers">
+                 <div th:each="follower:${followers}" class="list-item">
+                     <div>
+                         <a href="#"><img style="border-radius: 50px" th:src="${follower.getProfilePicture()}"
+                                          height="50" width="50" alt="profile picture"></a>
+                         <span th:text="${follower.getName()}" style="color: darkslateblue"></span>
+                     </div>
+                 </div>
+             </div>
+        </div><!--end of follower-->
+        <div class="tab-pane fade" id="nav-subscriber" role="tabpanel" aria-labelledby="nav-subscriber-tab">
+             <div id="subscribers">
+                 <div th:each="subscription:${subscriptions}" class="list-item">
+                     <div style="display: inline-block">
+                         <a href="#"><img style="border-radius: 50px" th:src="${subscription.getProfilePicture()}"
+                                          height="50" width="50" alt="profile picture"></a>
+                         <span th:text="${subscription.getName()}" style="color: darkslateblue"></span>
+                     </div>
+                 </div>
+             </div>
+        </div><!--end of subscriber-->
+        <div class="tab-pane fade" id="nav-user" role="tabpanel" aria-labelledby="nav-user-tab">
+            <div>
+                <div class="form-group">
+                    <label for="old-password">Old Password:</label>
+                    <input id="old-password" maxlength="18" type="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password:</label>
+                    <input id="new-password" maxlength="18" type="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-password">Confirm New Password:</label>
+                    <input id="confirm-new-password" maxlength="18" type="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <p id="msg2" style="color: red"></p>
+                </div>
+                <button onclick="checkPassword()" class="btn btn-primary" >Submit</button>
+            </div>
+            <form th:action="@{/logout}" method="post" style="margin-top: 3.5em">
+                <input type="submit" class="btn btn-danger" value="Logout">
+            </form>
+        </div><!--end of account-->
+    </div>
+</div>
+
+<!--content end-->
+<footer id="footer" style="height: 100px;width:100%;background: #2f2b2b">
+    <p style="color: white;line-height: 100px;text-align: center">Powered by SpringBoot</p>
+</footer>
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+<script>
+    function init(active){
+        console.log(active);
+        if(active !== '0'){
+            $('#nav-profile-tab').removeClass("active");
+            $('#nav-profile').removeClass("active").removeClass("show");
+            if(active === '1'){
+                $('#nav-subscriber-tab').addClass("active");
+                $('#nav-subscriber').addClass("active").addClass("show");
+            }else{
+                $('#nav-follower-tab').addClass("active");
+                $('#nav-follower').addClass("active").addClass("show");
+            }
+        }
+    }
+
+    function save(){
+        let name = $("#name").val().trim();
+        let email = $("#email").val().trim();
+        let flag = true;
+        if(name.length === 0) flag = false;
+        if(email.length === 0) flag = false;
+        if(!flag){
+            $("#msg").html("Email or name can't be empty").css("color","red");
+        }else{
+            sendUserInformationData(name,email);
+        }
+
+    }
+
+    function sendUserInformationData(name,email){
+        $.post({
+            url:"/saveUserInfo",
+            data: {
+                "name":name,
+                "email":email
+            },
+            contentType:"application/x-www-form-urlencoded",
+            success:function(data){
+                if(data === 1) $("#msg").html("Save successfully").css("color","green");
+                else $("#msg").html("Failed to save").css("color","red");
+            },
+            error:function (status) {
+                $("#msg").html("Failed to save").css("color","red");
+            }
+        });
+    }
+
+    function changePassword(){
+        let newPassword = $("#new-password").val();
+        let confirmPassword = $("#confirm-new-password").val();
+
+        if(newPassword.length < 6){
+            $("#msg2").html("New password should be at least 6 characters").css("color","red");
+            return;
+        }
+
+        if(newPassword !== confirmPassword){
+            $("#msg2").html("New password doesn't match").css("color","red");
+            return;
+        }
+        sendPasswordData(newPassword,true);
+    }
+
+
+    function checkPassword(){
+        let oldPassword = $("#old-password").val();
+
+        if(oldPassword.length === 0){
+            $("#msg2").html("Old password is empty").css("color","red");
+            return;
+        }
+        sendPasswordData(oldPassword,false);
+    }
+
+    function sendPasswordData(password,flag){
+        $.post({
+            url: flag === true ?"/changePassword":"/checkPassword",
+            data: {
+                "password":password
+            },
+            contentType:"application/x-www-form-urlencoded",
+            success:function(data){
+                if(flag){
+                   if(data === 1){
+                       $("#msg2").html("Password changed").css("color","green");
+                       $("#old-password").val('');
+                       $("#new-password").val('');
+                       $("#confirm-new-password").val('');
+                   }else{
+                       $("#msg2").html("Failed to change password").css("color","red");
+                   }
+                }else{
+                    if(data === 0){
+                        $("#msg2").html("Old password invalid").css("color","red");
+                    }else{
+                        changePassword();
+                    }
+                }
+            },
+            error:function (status) {
+                $("#msg2").html("An unexpected error occurred, failed to change password")
+                    .css("color","red");
+            }
+        });
+    }
+</script>
+
+
+</body>
+</html>

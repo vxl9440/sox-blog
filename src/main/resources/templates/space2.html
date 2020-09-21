@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Personal Space</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/commons.css}">
+    <link rel="stylesheet" th:href="@{/css/nav.css}">
+
+    <style>
+        body{
+            background: #f3eeee;
+        }
+
+        .blog{
+            border-bottom:1px solid #d4c5c5;
+            padding: 1em;
+        }
+
+        .list-item{
+            width: 60%;
+            margin: 0 auto;
+            padding: 0.5em;
+            border-bottom: 1px solid #cfbebe;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .list-item:hover{
+            background: #b6c5d6;
+        }
+
+        @media (max-width: 768px) {
+            .list-item{
+                width: 98%;
+            }
+        }
+
+        #author-section{
+            width:80%;
+            margin: 2em auto;
+            box-shadow: 1px 1px #b39d9d;
+            background: #FFFFFF;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body th:onload="init([[${active}]])">
+<!--nav-->
+<nav th:replace="~{common/commons::navbar-2}"></nav>
+
+<div id="author-section" style="padding: 0.5em">
+    <p> <img th:src="${author.getProfilePicture()}" style="border-radius: 64px" width="64" height="64" alt="profile picture"> </p>
+    <p style="color: blueviolet;font-weight: bold" th:text="${author.getName()}"></p>
+    <div>
+        <button id="sub-button" th:text="${isSubbed == false?'Follow':'Followed'}"
+                th:onclick="subscribeControl([[${author.getUsername()}]])"
+                th:class="${isSubbed == false?'btn btn-danger':'btn btn-secondary'}">
+        </button>
+    </div>
+</div>
+
+<div id="profile">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-blogs-tab" data-toggle="tab"
+               href="#nav-blogs" role="tab" aria-controls="nav-blogs" aria-selected="true">Profile</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade" id="nav-blogs" role="tabpanel" aria-labelledby="nav-blogs-tab">
+            <div style="border: 1px solid #88828a">
+                <div th:each="bList:${blogList}" class="blog">
+                    <p>
+                        <a th:href="@{/blog/readBlog/}+${bList.getBlogID()}" th:text="${bList.getTitle()}"
+                           class="h3" style="text-decoration: underline"></a>
+                    </p>
+                    <p th:text="${bList.getIntroduction()}"></p>
+                    <p>
+                        <span th:text="${#dates.format(bList.getDate(), 'yyyy-MM-dd')}"></span>
+                        <span>
+                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
+                                <path fill-rule="evenodd" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                             </svg>
+                         <span th:text="${bList.getView()}" id="view"></span>
+                       </span>
+                    </p>
+                </div>
+            </div>
+        </div> <!--end of blogs-->
+    </div>
+</div>
+
+
+
+<!--include js-->
+<script th:src="@{/js/JQuery.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+
+</body>
+</html>
