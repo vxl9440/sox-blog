@@ -126,33 +126,9 @@
 <script th:src="@{/js/bootstrap.js}"></script>
 <script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
 <script src="/js/character.js"></script>
-
+<script th:src="@{/js/index.js}"></script>
 <!--<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 <script src="/js/ballAttach.js"></script>-->
-
-<script type="text/javascript">
-    let withType = false;
-    function init(withType_t){
-        withType = withType_t;
-    }
-
-    function changePage(){
-        let pageNumber = $("#dropdown-menu").val();
-        $('#blogs').load((!withType?"/changePage/":"/changePageWithType/")+pageNumber);
-        $("#dropdown-menu").val(pageNumber);
-    }
-
-    function searchForType(typeID){
-        $('#blogs').load("/searchForType/"+typeID);
-    }
-
-    function searchForBlogs(){
-        let keywords = $("#search-input").val();
-        if(keywords.trim().length !== 0){
-            $('#blogs').load("/searchForBlogs/"+encodeURI(keywords));
-        }
-    }
-</script>
 
 </body>
 </html>
