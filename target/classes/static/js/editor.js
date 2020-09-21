@@ -10,7 +10,6 @@ editor.customConfig.menus = [
     'strikeThrough',  // 删除线
     'foreColor',  // 文字颜色
     'link',  // 插入链接
-    'list',  // 列表
     'justify',  // 对齐方式
     'image',  // 插入图片
     'table',  // 表格
@@ -34,6 +33,11 @@ editor.customConfig.lang = {
     '设置列表':'set list',
     '对齐方式':'justify',
     '插入表格':'insert table',
+    '靠左':'left',
+    '靠右':'right',
+    '居中':'center',
+    '插入代码':'Insert code',
+    '插入':'Insert'
     // 还可自定添加更多
 }
 editor.customConfig.uploadImgShowBase64 = true; //update to server

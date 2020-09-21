@@ -94,24 +94,31 @@ public class MainController {
         return "space";
     }
 
-    /*@RequestMapping("/space/{username}")
+    @RequestMapping("/space/{username}")
     public String goSpace(@PathVariable("username") String username,HttpSession session,Model model){
         List<Blog> blogList = blogService.selectBlogByAuthorID(username);
+        User author = userService.getAccountByUsername(username);
 
-        *//*int result = 0;
+        author.setProfilePicture(FileHandler.readFile(author.getProfilePicture()));
+
         boolean isMe = false;
+        boolean isSubbed = false;
         if(session.getAttribute("user") != null){
             User user = (User)session.getAttribute("user");
             Map<String,String> map = new HashMap<>();
-            map.put("subFromID",user.getUsername());
             map.put("subToID",author.getUsername());
-            result = userService.selectSubToID(map);
+            map.put("subFromID",user.getUsername());
+            isSubbed = userService.selectSubToID(map) == 1;
             isMe = user.getUsername().equals(author.getUsername());
-        }*//*
+        }
 
+        model.addAttribute("isSubbed",isSubbed);
+        model.addAttribute("isMe",isMe);
         model.addAttribute("blogList",blogList);
+        model.addAttribute("author",author);
+
         return "space2";
-    }*/
+    }
 
 
     private void refreshHomePage(Model model,int start,boolean withType,int typeID){

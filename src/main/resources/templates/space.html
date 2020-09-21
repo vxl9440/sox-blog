@@ -124,7 +124,7 @@
              <div id="followers">
                  <div th:each="follower:${followers}" class="list-item">
                      <div>
-                         <a href="#"><img style="border-radius: 50px" th:src="${follower.getProfilePicture()}"
+                         <a th:href="@{/space/}+${follower.getUsername()}"><img style="border-radius: 50px" th:src="${follower.getProfilePicture()}"
                                           height="50" width="50" alt="profile picture"></a>
                          <span th:text="${follower.getName()}" style="color: darkslateblue"></span>
                      </div>
@@ -135,7 +135,7 @@
              <div id="subscribers">
                  <div th:each="subscription:${subscriptions}" class="list-item">
                      <div style="display: inline-block">
-                         <a href="#"><img style="border-radius: 50px" th:src="${subscription.getProfilePicture()}"
+                         <a th:href="@{/space/}+${subscription.getUsername()}"><img style="border-radius: 50px" th:src="${subscription.getProfilePicture()}"
                                           height="50" width="50" alt="profile picture"></a>
                          <span th:text="${subscription.getName()}" style="color: darkslateblue"></span>
                      </div>

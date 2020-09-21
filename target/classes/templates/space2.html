@@ -20,23 +20,14 @@
             padding: 1em;
         }
 
-        .list-item{
-            width: 60%;
-            margin: 0 auto;
-            padding: 0.5em;
-            border-bottom: 1px solid #cfbebe;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .list-item:hover{
-            background: #b6c5d6;
-        }
-
-        @media (max-width: 768px) {
-            .list-item{
-                width: 98%;
-            }
+        #profile{
+            width: 80%;
+            margin: 1em auto;
+            box-shadow: 1px 1px #b39d9d;
+            height:650px;
+            background: #FFFFFF;
+            border-radius: 5px;
+            overflow: auto;
         }
 
         #author-section{
@@ -48,7 +39,7 @@
         }
     </style>
 </head>
-<body th:onload="init([[${active}]])">
+<body th:onload="initVariables([[${isSubbed}]])">
 <!--nav-->
 <nav th:replace="~{common/commons::navbar-2}"></nav>
 
@@ -67,12 +58,12 @@
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-blogs-tab" data-toggle="tab"
-               href="#nav-blogs" role="tab" aria-controls="nav-blogs" aria-selected="true">Profile</a>
+               href="#nav-blogs" role="tab" aria-controls="nav-blogs" aria-selected="true">Blogs</a>
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade" id="nav-blogs" role="tabpanel" aria-labelledby="nav-blogs-tab">
-            <div style="border: 1px solid #88828a">
+        <div class="tab-pane fade show active" id="nav-blogs" role="tabpanel" aria-labelledby="nav-blogs-tab">
+            <div style="border: 1px solid #88828a" th:style="${blogList.size() > 0?'display:block':'display:none'}">
                 <div th:each="bList:${blogList}" class="blog">
                     <p>
                         <a th:href="@{/blog/readBlog/}+${bList.getBlogID()}" th:text="${bList.getTitle()}"
@@ -91,16 +82,60 @@
                     </p>
                 </div>
             </div>
+            <div th:style="${blogList.size() == 0?'display:block':'display:none'}">
+                <p style="text-align: center;color: red;padding-top:1em" class="h3">
+                    Not Blog Found
+                </p>
+            </div>
         </div> <!--end of blogs-->
     </div>
 </div>
 
-
+<!--content end-->
+<footer id="footer" style="height: 100px;width:100%;background: #2f2b2b">
+    <p style="color: white;line-height: 100px;text-align: center">Powered by SpringBoot</p>
+</footer>
 
 <!--include js-->
 <script th:src="@{/js/JQuery.js}"></script>
 <script th:src="@{/js/popper.js}"></script>
 <script th:src="@{/js/bootstrap.js}"></script>
 
+<script type="text/javascript">
+    let subbed = true;
+
+    function initVariables(subbed_t){
+        subbed = subbed_t;
+    }
+
+    function subscribeControl(authorID){
+        $.post({
+            url:"/subscribe/"+(subbed?"true":"false"),
+            data: {
+                "subToID": authorID
+            },
+            contentType:"application/x-www-form-urlencoded",
+            success:function(data){
+                if(data === 0){ //fail
+                    alert("An unexpected error occurred, please try again");
+                }else if(data === 1){ //success
+                    if(subbed){
+                        $("#sub-button").text("Follow").
+                        removeClass("btn-secondary").addClass("btn-danger");
+                    }else{
+                        $("#sub-button").text("Followed").
+                        removeClass("btn-danger").addClass("btn-secondary");
+                    }
+                    subbed = !subbed;
+                }else{ // no authentication
+                    alert("Please login to follow");
+                }
+            },
+            error:function (status) {
+                alert("An unexpected error occurred");
+            }
+        });
+    }
+</script>
 </body>
 </html>

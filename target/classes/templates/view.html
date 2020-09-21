@@ -53,7 +53,9 @@
 
 <div id="author-section" style="padding: 0.5em">
     <p> <img th:src="${author.getProfilePicture()}" style="border-radius: 64px" width="64" height="64" alt="profile picture"> </p>
-    <p style="color: blueviolet;font-weight: bold" th:text="${author.getName()}"></p>
+    <p style="color: blueviolet;font-weight: bold">
+        <a th:text="${author.getName()}" th:href="@{/space/}+${author.getUsername()}"></a>
+    </p>
     <div>
         <button id="sub-button" th:text="${isSubbed == false?'Follow':'Followed'}"
                 th:style="${isMe == true?'display:none':'display:inline-block'}"

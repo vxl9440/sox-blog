@@ -1,6 +1,9 @@
 # idea file
 .idea/
 
+# data file
+data/
+
 # Compiled class file
 *.class
 
