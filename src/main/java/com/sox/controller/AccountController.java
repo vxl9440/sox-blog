@@ -46,6 +46,7 @@ public class AccountController {
         UsernamePasswordToken token = new UsernamePasswordToken(username,Hasher.encrypt(password));
         try {
             subject.login(token);//Login
+            subject.getSession().setTimeout(-1000);
         }catch(UnknownAccountException | IncorrectCredentialsException accountException){
             model.addAttribute("msg","username or password invalid");
             model.addAttribute("username",username);

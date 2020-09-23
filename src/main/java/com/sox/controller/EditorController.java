@@ -38,6 +38,9 @@ public class EditorController {
     @ResponseBody
     public String submitBlog(HttpSession session,String title,String introduction,
                              String content,@RequestParam("types[]")int[] types) throws IOException {
+        if(session.getAttribute("user") == null){
+            return "EXPIRE"; // session expired
+        }
         String blogID = UUID.randomUUID().toString();//create a blog id
         String realPath = Constant.postPath_win +blogID+title.hashCode();
         File file = new File(realPath);

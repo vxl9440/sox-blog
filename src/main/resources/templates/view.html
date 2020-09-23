@@ -88,7 +88,7 @@
 
     <div style="margin-top: 0.5em">
         <p class="h4">Content</p>
-        <div style="overflow: auto" th:utext="${blog.getContent()}"></div>
+        <div th:utext="${blog.getContent()}" id="text-editor"></div>
     </div>
 
     <div id="tags">
@@ -139,6 +139,8 @@
 <script th:src="@{/js/JQuery.js}"></script>
 <script th:src="@{/js/popper.js}"></script>
 <script th:src="@{/js/bootstrap.js}"></script>
+<!-- include editor -->
+<script type="text/javascript" th:src="@{/js/editor/wangEditor.min.js}"></script>
 
 <script type="text/javascript">
     let subbed = true;
@@ -189,6 +191,12 @@
             }
         });
     }
+
+
+    let E = window.wangEditor;
+    let editor = new E('','#text-editor');
+    editor.create();
+    editor.$textElem.attr('contenteditable', false)
 </script>
 
 </body>

@@ -49,12 +49,13 @@ function validator(){
     let subject = $("#subject").val().trim();
     let introduction = $("#introduction").val().trim();
     let blogContent = editor.txt.html().trim();
-    if(subject.length > 0 && blogContent.length > 0 && introduction.length > 0){
+    if(subject.length > 0 && blogContent.length > 0 && introduction.length > 0 && typeList.length > 0){
         sendData();
     }else{
         if(subject.length === 0) $("#subject").css("border","1px solid red");
         if(editor.txt.html().length === 0) $("#text-bar").css("border","1px solid red");
         if(introduction.length === 0) $("#introduction").css("border","1px solid red");
+        if(typeList.length === 0) $("#type-field").css("border","1px solid red");
     }
 }
 
@@ -73,8 +74,11 @@ function sendData(){
         success:function(data){
             if(data !== "FAIL"){
                 window.location.href = "/blog/readBlog/"+data;
+            }else if(data === "FAIL"){
+                alert("Something go wrong, try again");
             }else{
-                alert("Something go wrong");
+                alert("Session expired");
+                window.location.href = "/toLogin";
             }
         },
         error:function (status) {
